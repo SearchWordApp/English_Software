@@ -89,8 +89,7 @@ public class WordInfo extends Activity {
 						        	 public void onClick(DialogInterface dialog, int whichButton) { 
 						        		 setResult(RESULT_OK);//确定按钮事件 
 						        	 } 
-						         }) 
-						         .show();
+						         }).show();
 							}
 							else{
 								progressDialog = ProgressDialog.show(WordInfo.this, "", "正在添加，请稍后...", true, false);
