@@ -1,7 +1,4 @@
 package cn.edu.ustc.main;
-
-
-
 public class Word {
 
 	private String word;
