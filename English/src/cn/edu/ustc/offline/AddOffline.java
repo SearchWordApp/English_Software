@@ -49,7 +49,20 @@ public class AddOffline extends Activity {
     }
       
     private void showListFiles(File[] file){   	
-    	
+    	fileNames = new String[file.length];
+    	for (int i=0;i<fileNames.length;i++){
+    		fileNames[i] = file[i].getName();
+    	}
+    	sdcardList.setAdapter(new SimpleAdapter(this, getData(), R.layout.common_listitem,   
+                new String[]{"img", "text"},   
+                new int[]{R.id.list_img, R.id.list_row}));
+    	sdcardList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+
+			public void onItemClick(AdapterView<?> arg0, View arg1, int arg2,
+					long arg3) {
+				onListItemClick(arg2);
+			}
+		});
 	}
     
     private List<Map<String, Object>> getData() {  

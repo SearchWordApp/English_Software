@@ -59,11 +59,7 @@ public class BookPageFactory {
 	}
 
 	public void openbook(String strFilePath) throws IOException {
-		book_file = new File(strFilePath);
-		long lLen = book_file.length();
-		m_mbBufLen = (int) lLen;
-		m_mbBuf = new RandomAccessFile(book_file, "r").getChannel().map(
-				FileChannel.MapMode.READ_ONLY, 0, lLen);
+
 	}
 	
 
