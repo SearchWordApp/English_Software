@@ -105,8 +105,7 @@ public class BookPageFactory {
 				i--;
 			}
 		}
-		if (i < 0)
-			i = 0;
+		
 		int nParaSize = nEnd - i;
 		int j;
 		byte[] buf = new byte[nParaSize];
@@ -114,7 +113,7 @@ public class BookPageFactory {
 			buf[j] = m_mbBuf.get(i + j);
 		} else if (m_strCharsetName.equals("UTF-16BE")) {
 			while (i < m_mbBufLen - 1) {
-				b0 = m_mbBuf.get(i++);
+				b0 = m_mbBuf.get(i=+1);
 				b1 = m_mbBuf.get(i++);
 				if (b0 == 0x00 && b1 == 0x0a) {
 					break;
