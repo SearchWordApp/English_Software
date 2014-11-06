@@ -152,6 +152,17 @@ public class BookPageFactory {
 		return buf;
 	}
 	
+	protected void prePage() throws IOException {
+		if (m_mbBufBegin <= 0) {
+			m_mbBufBegin = 0;
+			m_isfirstPage=true;
+			return;
+		}else m_isfirstPage=false;
+		m_lines.clear();
+		pageUp();
+		m_lines = pageDown();
+	}
+	
 	public void setBgBitmap(Bitmap BG) {
 		m_book_bg = BG;
 	}
