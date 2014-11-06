@@ -67,13 +67,38 @@ public class AddOffline extends Activity {
     
     private List<Map<String, Object>> getData() {  
         List<Map<String, Object>> list = new ArrayList<Map<String, Object>>();                
-                
+        for(int i = 0; i < fileNames.length; i++) {  
+            Map<String, Object> map = new HashMap<String, Object>();  
+            if(currentFiles[i].isFile()){
+            	if(currentFiles[i].getName().toLowerCase().endsWith(".xml")){
+	            	map.put("text",fileNames[i]);  
+	            	map.put("img", R.drawable.xml_logo);  
+            	}
+            	else if(currentFiles[i].getName().toLowerCase().endsWith(".txt")){
+            		map.put("text",fileNames[i]);  
+                	map.put("img", R.drawable.txt_logo);
+            	}
+            	else{
+            		map.put("text",fileNames[i]);  
+                	map.put("img", R.drawable.other_logo);
+            	}
+            } else{
+            	map.put("text",fileNames[i]);  
+            	map.put("img", R.drawable.file_logo);                     	
+            }
+            list.add(map);             
+        }         
         return list;  
     } 
     
 	class Add_File {
 		public Add_File(File soucrfile,File targetfile){	
-			
+			FileOperate fo = new FileOperate();
+			try {
+				fo.copyFile(soucrfile,targetfile);
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
 		}
 	}
 	
