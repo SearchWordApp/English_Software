@@ -112,6 +112,26 @@ public class BookPageFactory {
 		byte[] buf = new byte[nParaSize];
 		for (j = 0; j < nParaSize; j++) {
 			buf[j] = m_mbBuf.get(i + j);
+		} else if (m_strCharsetName.equals("UTF-16BE")) {
+			while (i < m_mbBufLen - 1) {
+				b0 = m_mbBuf.get(i++);
+				b1 = m_mbBuf.get(i++);
+				if (b0 == 0x00 && b1 == 0x0a) {
+					break;
+				}
+			}
+		} else {
+			while (i < m_mbBufLen) {
+				b0 = m_mbBuf.get(i++);
+				if (b0 == 0x0a) {
+					break;
+				}
+			}
+		}
+		int nParaSize = i - nStart;
+		byte[] buf = new byte[nParaSize];
+		for (i = 0; i < nParaSize; i++) {
+			buf[i] = m_mbBuf.get(nFromPos + i);
 		}
 		return buf;
 	}
