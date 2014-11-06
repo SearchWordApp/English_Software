@@ -59,7 +59,11 @@ public class BookPageFactory {
 	}
 
 	public void openbook(String strFilePath) throws IOException {
-
+		book_file = new File(strFilePath);
+		long lLen = book_file.length();
+		m_mbBufLen = (int) lLen;
+		m_mbBuf = new RandomAccessFile(book_file, "r").getChannel().map(
+				FileChannel.MapMode.READ_ONLY, 0, lLen);
 	}
 	
 
@@ -112,6 +116,23 @@ public class BookPageFactory {
 		return buf;
 	}
 
+	protected byte[] readParagraphForward(int nFromPos) {
+		int nStart = nFromPos;
+		int i = nStart;
+		byte b0, b1;
+		// 根据编码格式判断换行
+		if (m_strCharsetName.equals("UTF-16LE")) {
+			while (i < m_mbBufLen - 1) {
+				b0 = m_mbBuf.get(i++);
+				b1 = m_mbBuf.get(i++);
+				if (b0 == 0x0a && b1 == 0x00) {
+					break;
+				}
+			}
+		} 
+		return buf;
+	}
+	
 	public void setBgBitmap(Bitmap BG) {
 		m_book_bg = BG;
 	}
