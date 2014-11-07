@@ -103,7 +103,22 @@ public class AddOffline extends Activity {
 	}
 	
 	public void onListItemClick(final int position) {
-			
+		class Add_Success implements OnClickListener{
+			File soucrfile,targetfile;
+			public Add_Success(File soucrfile,File targetfile){
+				this.soucrfile=soucrfile;
+				this.targetfile=targetfile;
+			}
+			public void onClick(DialogInterface dialog, int which) {				
+				new Add_File(soucrfile,targetfile);
+				new AlertDialog.Builder(AddOffline.this) ;
+				Toast.makeText(AddOffline.this,"短文导入成功！",Toast.LENGTH_SHORT ).show();
+        		Intent intent=new Intent();
+        		intent.setClass( AddOffline.this,OfflineList.class);
+        		startActivity(intent);
+        		AddOffline.this.finish();       		
+			}
+		}	
 	}
 	
 	public boolean onKeyDown(int keyCode, KeyEvent event) {
