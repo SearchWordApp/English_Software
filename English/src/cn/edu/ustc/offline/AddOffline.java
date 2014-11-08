@@ -118,7 +118,48 @@ public class AddOffline extends Activity {
         		startActivity(intent);
         		AddOffline.this.finish();       		
 			}
-		}	
+		}
+
+//是文件，并且是xml文件才能导入
+		if(currentFiles[position].isFile() && currentFiles[position].getName().toLowerCase().endsWith(".txt")){
+			new AlertDialog.Builder(AddOffline.this) 
+	        .setTitle("提示") 
+	        .setMessage("确定导入此篇短文吗？") 
+	        .setPositiveButton("确定", new DialogInterface.OnClickListener() { 
+	        	public void onClick(DialogInterface dialog, int whichButton) { 
+	        		setResult(RESULT_OK);//确定按钮事件 
+	        		Context cont = AddOffline.this.getApplicationContext();
+	        		String fileroot = cont.getFilesDir().getAbsolutePath()+"/offline/";
+	        		File targetfile = new File(fileroot + currentFiles[position].getName());
+	        		File sourcefile = currentFiles[position];
+	    			//String filepath = currentFiles[position].getAbsolutePath();
+	    			if(targetfile.exists()){
+	    				new AlertDialog.Builder(AddOffline.this)
+	    				.setTitle("提示") 
+	    				.setMessage("该短文已存在，确定覆盖吗？")
+	    				.setPositiveButton("确定",new Add_Success(sourcefile,targetfile))	    				
+	    				.setNegativeButton("取消",new OnClickListener(){
+	    					public void onClick(DialogInterface dialog, int whichButton) {}})
+	      	          	.show();
+	    			}
+	    			else {
+	    				new Add_File(sourcefile,targetfile);	
+	    				Toast.makeText(AddOffline.this,"新文章导入成功！",Toast.LENGTH_SHORT ).show();
+	            		Intent intent=new Intent();
+	            		//intent.putExtra("filepath", filepath);	         	            		
+	            		intent.setClass( AddOffline.this,OfflineList.class);
+	            		startActivity(intent);
+	            		AddOffline.this.finish(); 
+	    			}
+	        	}
+	        }) 	          	
+	        .setNegativeButton("取消", new DialogInterface.OnClickListener() { 
+	          	public void onClick(DialogInterface dialog, int whichButton) { 
+	        		 //取消按钮事件 
+	          		} 
+	        }) 
+	        .show();							
+		}		
 	}
 	
 	public boolean onKeyDown(int keyCode, KeyEvent event) {
