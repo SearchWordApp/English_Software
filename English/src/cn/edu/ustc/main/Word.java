@@ -3,7 +3,7 @@ public class Word {
 
 	private String word;
 	private String trans;
-	private String phonetic;
+	//private String phonetic;
 	private String tags;
 	private int progress;
 		
@@ -23,13 +23,13 @@ public class Word {
 		this.trans = trans;
 	}
 	
-	public String getPhonetic() {
+	/**public String getPhonetic() {
 		return phonetic;
-	}
+	}*/
 	
-	public void setPhonetic(String phonetic) {
+	/**public void setPhonetic(String phonetic) {
 		this.phonetic = phonetic;
-	}
+	}*/
 	
 	public String getTags() {
 		return tags;

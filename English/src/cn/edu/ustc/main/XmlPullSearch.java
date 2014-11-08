@@ -49,9 +49,9 @@ public class XmlPullSearch{
                     	}                      
                     }else if("trans".equals(nodeName)&& found ){
                     	word.setTrans(xmlPullParser.nextText());
-                    }else if("phonetic".equals(nodeName) && found){
+                    }/**else if("phonetic".equals(nodeName) && found){
                         word.setPhonetic(xmlPullParser.nextText());
-                    }else if("tags".equals(nodeName) && found){
+                    }*/else if("tags".equals(nodeName) && found){
                         word.setTags(xmlPullParser.nextText());
                     }
                     break;
