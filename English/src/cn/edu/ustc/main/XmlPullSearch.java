@@ -9,7 +9,6 @@ import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
 import org.xmlpull.v1.XmlPullParserFactory;
 
-
 public class XmlPullSearch{
 	
 	private String path;
@@ -21,34 +20,27 @@ public class XmlPullSearch{
 		this.wordSearch = wordSearch;
 	}
 	
-	public Word getWord() {
-		
+	public Word getWord() {	
 		try {
 			XmlPullParserFactory pullParserFactory = XmlPullParserFactory
 					.newInstance();
-			XmlPullParser xmlPullParser = pullParserFactory.newPullParser(); // 获取XmlPullParser的实例
-			InputStream inputStream = new FileInputStream(new File(path)); // 设置输入流 xml文件
-			xmlPullParser.setInput(inputStream, "UTF-8"); // 设置输入流为 文件路径，解析文件
+			XmlPullParser xmlPullParser = pullParserFactory.newPullParser(); 
+			InputStream inputStream = new FileInputStream(new File(path)); 
+			xmlPullParser.setInput(inputStream, "UTF-8"); 
 			int eventType = xmlPullParser.getEventType();
-			/*
-			<item>    
-				<word>cupboard</word>
-	    		<trans><![CDATA[n. 食橱；碗柜]]></trans>
-	    		<phonetic><![CDATA[['kʌbəd]]]></phonetic>
-	    		<tags>CET4-EASY</tags>
-			</item>*/
+			
 			boolean found = false;
 			while (eventType != XmlPullParser.END_DOCUMENT) {
 				String nodeName=xmlPullParser.getName();
                 switch (eventType) {
-                //文档开始
+            
                 case XmlPullParser.START_DOCUMENT:
                     break;
-                //开始节点
+               
                 case XmlPullParser.START_TAG:
-                    //判断如果其实节点为word
+                    
                     if("word".equals(nodeName)){
-                        //实例化word对象
+                       
                     	String wt = xmlPullParser.nextText().trim();
                     	if(wordSearch.equals(wt)){
                     		word=new Word();
@@ -63,7 +55,7 @@ public class XmlPullSearch{
                         word.setTags(xmlPullParser.nextText());
                     }
                     break;
-                //结束节点
+                
                 case XmlPullParser.END_TAG:
                     if("item".equals(nodeName) && found){
                         return word; 
