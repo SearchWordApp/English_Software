@@ -160,9 +160,38 @@ public class AddOffline extends Activity {
 	        }) 
 	        .show();							
 		}		
+		else{
+			if(currentFiles[position].isDirectory()){
+				File[] temp=currentFiles[position].listFiles();//获取用户点击的文件夹 下的所有文件 
+				if(temp==null||temp.length==0){
+					Toast.makeText(this,"文件夹为空，该路径不可访问！",Toast.LENGTH_SHORT ).show();
+				}
+				else{
+					currentParent=currentFiles[position];
+					currentFiles=temp;
+					showListFiles(temp);
+				}
+			}
+			else	
+				Toast.makeText(AddOffline.this, "文件格式有误，只能为txt文件", Toast.LENGTH_SHORT).show();
+		}
 	}
 	
 	public boolean onKeyDown(int keyCode, KeyEvent event) {
+	if(keyCode==KeyEvent.KEYCODE_BACK){
+			if(!currentParent.toString().equals("/mnt/sdcard")){
+    			currentParent=currentParent.getParentFile();
+    			currentFiles=currentParent.listFiles();
+    			showListFiles(currentFiles);
+    			return false;	//可保证其不会直接返回上一个activity
+			}
+			else{
+				Intent intent=new Intent();
+     			intent.setClass(AddOffline.this,OfflineList.class);
+     			startActivity(intent);
+    			AddOffline.this.finish();
+    		}	
+		}
 		return super.onKeyDown(keyCode, event);
 	}
 }
