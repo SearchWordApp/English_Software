@@ -18,7 +18,7 @@ import android.view.KeyEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
-//import android.widget.Toast;
+
 
 public class MainActivity extends Activity {
 	
@@ -59,9 +59,7 @@ public class MainActivity extends Activity {
         
         
         button_word_learn.setOnClickListener(new Button.OnClickListener(){
-
 			public void onClick(View v) {
-				
 				Intent intent=new Intent();
         		intent.setClass(MainActivity.this,WordLearnMain.class);
         		startActivity(intent);
@@ -106,9 +104,7 @@ public class MainActivity extends Activity {
 	        	 public void onClick(DialogInterface dialog, int whichButton) { 
 	        		 //取消按钮事件 
 	        	 } 
-	         }) 
-	         .show();
-			
+	         }).show();
 		}
 		return super.onKeyDown(keyCode, event);
 	}
