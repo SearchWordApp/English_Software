@@ -105,36 +105,19 @@ public class BookPageFactory {
 				i--;
 			}
 		}
-		
+		if (i < 0)
+			i = 0;
 		int nParaSize = nEnd - i;
 		int j;
 		byte[] buf = new byte[nParaSize];
 		for (j = 0; j < nParaSize; j++) {
 			buf[j] = m_mbBuf.get(i + j);
-		} else if (m_strCharsetName.equals("UTF-16BE")) {
-			while (i < m_mbBufLen - 1) {
-				b0 = m_mbBuf.get(i=+1);
-				b1 = m_mbBuf.get(i++);
-				if (b0 == 0x00 && b1 == 0x0a) {
-					break;
-				}
-			}
-		} else {
-			while (i < m_mbBufLen) {
-				b0 = m_mbBuf.get(i++);
-				if (b0 == 0x0a) {
-					break;
-				}
-			}
-		}
-		int nParaSize = i - nStart;
-		byte[] buf = new byte[nParaSize];
-		for (i = 0; i < nParaSize; i++) {
-			buf[i] = m_mbBuf.get(nFromPos + i);
 		}
 		return buf;
 	}
 
+
+	// ¶ÁÈ¡ÉÏÒ»¶ÎÂä
 	protected byte[] readParagraphForward(int nFromPos) {
 		int nStart = nFromPos;
 		int i = nStart;
@@ -171,6 +154,7 @@ public class BookPageFactory {
 		}
 		return buf;
 	}
+
 	protected Vector<String> pageDown() {
 		String strParagraph = "";
 		Vector<String> lines = new Vector<String>();
@@ -183,9 +167,80 @@ public class BookPageFactory {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-			
+			String strReturn = "";
+			if (strParagraph.indexOf("\r\n") != -1) {
+				strReturn = "\r\n";
+				strParagraph = strParagraph.replaceAll("\r\n", "");
+			} else if (strParagraph.indexOf("\n") != -1) {
+				strReturn = "\n";
+				strParagraph = strParagraph.replaceAll("\n", "");
+			}
+
+			if (strParagraph.length() == 0) {
+				lines.add(strParagraph);
+			}
+			while (strParagraph.length() > 0) {
+				int nSize = mPaint.breakText(strParagraph, true, mVisibleWidth,
+						null);
+				lines.add(strParagraph.substring(0, nSize));
+				strParagraph = strParagraph.substring(nSize);
+				if (lines.size() >= mLineCount) {
+					break;
+				}
+			}
+			if (strParagraph.length() != 0) {
+				try {
+					m_mbBufEnd -= (strParagraph + strReturn)
+							.getBytes(m_strCharsetName).length;
+				} catch (UnsupportedEncodingException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
 		}
 		return lines;
+	}
+
+	protected void pageUp() {
+		if (m_mbBufBegin < 0)
+			m_mbBufBegin = 0;
+		Vector<String> lines = new Vector<String>();
+		String strParagraph = "";
+		while (lines.size() < mLineCount && m_mbBufBegin > 0) {
+			Vector<String> paraLines = new Vector<String>();
+			byte[] paraBuf = readParagraphBack(m_mbBufBegin);
+			m_mbBufBegin -= paraBuf.length;
+			try {
+				strParagraph = new String(paraBuf, m_strCharsetName);
+			} catch (UnsupportedEncodingException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			strParagraph = strParagraph.replaceAll("\r\n", "");
+			strParagraph = strParagraph.replaceAll("\n", "");
+
+			if (strParagraph.length() == 0) {
+				paraLines.add(strParagraph);
+			}
+			while (strParagraph.length() > 0) {
+				int nSize = mPaint.breakText(strParagraph, true, mVisibleWidth,
+						null);
+				paraLines.add(strParagraph.substring(0, nSize));
+				strParagraph = strParagraph.substring(nSize);
+			}
+			lines.addAll(0, paraLines);
+		}
+		while (lines.size() > mLineCount) {
+			try {
+				m_mbBufBegin += lines.get(0).getBytes(m_strCharsetName).length;
+				lines.remove(0);
+			} catch (UnsupportedEncodingException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+		m_mbBufEnd = m_mbBufBegin;
+		return;
 	}
 
 	protected void prePage() throws IOException {
@@ -198,7 +253,38 @@ public class BookPageFactory {
 		pageUp();
 		m_lines = pageDown();
 	}
-	
+
+	public void nextPage() throws IOException {
+		if (m_mbBufEnd >= m_mbBufLen) {
+			m_islastPage=true;
+			return;
+		}else m_islastPage=false;
+		m_lines.clear();
+		m_mbBufBegin = m_mbBufEnd;
+		m_lines = pageDown();
+	}
+
+	public void onDraw(Canvas c) {
+		if (m_lines.size() == 0)
+			m_lines = pageDown();
+		if (m_lines.size() > 0) {
+			if (m_book_bg == null)
+				c.drawColor(m_backColor);
+			else
+				c.drawBitmap(m_book_bg, 0, 0, null);
+			int y = marginHeight;
+			for (String strLine : m_lines) {
+				y += m_fontSize;
+				c.drawText(strLine, marginWidth, y, mPaint);
+			}
+		}
+		float fPercent = (float) (m_mbBufBegin * 1.0 / m_mbBufLen);
+		DecimalFormat df = new DecimalFormat("#0.0");
+		String strPercent = df.format(fPercent * 100) + "%";
+		int nPercentWidth = (int) mPaint.measureText("999.9%") + 1;
+		c.drawText(strPercent, mWidth - nPercentWidth, mHeight - 5, mPaint);
+	}
+
 	public void setBgBitmap(Bitmap BG) {
 		m_book_bg = BG;
 	}
