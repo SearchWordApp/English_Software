@@ -87,7 +87,7 @@ public class AddOffline extends Activity {
             	map.put("img", R.drawable.file_logo);                     	
             }
             list.add(map);             
-        }         
+        }           
         return list;  
     } 
     
@@ -119,8 +119,8 @@ public class AddOffline extends Activity {
         		AddOffline.this.finish();       		
 			}
 		}
-
-//是文件，并且是xml文件才能导入
+		
+		//是文件，并且是xml文件才能导入
 		if(currentFiles[position].isFile() && currentFiles[position].getName().toLowerCase().endsWith(".txt")){
 			new AlertDialog.Builder(AddOffline.this) 
 	        .setTitle("提示") 
@@ -159,7 +159,7 @@ public class AddOffline extends Activity {
 	          		} 
 	        }) 
 	        .show();							
-		}		
+		}
 		else{
 			if(currentFiles[position].isDirectory()){
 				File[] temp=currentFiles[position].listFiles();//获取用户点击的文件夹 下的所有文件 
@@ -174,11 +174,11 @@ public class AddOffline extends Activity {
 			}
 			else	
 				Toast.makeText(AddOffline.this, "文件格式有误，只能为txt文件", Toast.LENGTH_SHORT).show();
-		}
+		}		
 	}
 	
 	public boolean onKeyDown(int keyCode, KeyEvent event) {
-	if(keyCode==KeyEvent.KEYCODE_BACK){
+		if(keyCode==KeyEvent.KEYCODE_BACK){
 			if(!currentParent.toString().equals("/mnt/sdcard")){
     			currentParent=currentParent.getParentFile();
     			currentFiles=currentParent.listFiles();
