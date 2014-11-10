@@ -108,23 +108,3 @@ public class MainActivity extends Activity {
 		}
 		return super.onKeyDown(keyCode, event);
 	}
-    
-    public void importRes(int i, String path){
-    	FileOutputStream fos = null;
-		try {
-			fos = new FileOutputStream(path);
-			byte[] buffer = new byte[1024];
-			int count = 0;
-			InputStream is = getResources().openRawResource(i);
-			while ((count = is.read(buffer)) > 0) {
-				fos.write(buffer, 0, count);
-			}
-			fos.close();
-			is.close();
-		} catch (FileNotFoundException e) {
-			e.printStackTrace();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-    } 
-}
