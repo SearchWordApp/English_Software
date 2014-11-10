@@ -251,36 +251,4 @@ public class WordInfo extends Activity {
 			}		
     	});
     }
-    
-	Handler handler = new Handler() {
-		@Override
-		public void handleMessage(Message msg) {
-			progressDialog.dismiss();
-			switch (msg.what) {
-			case 0:
-				if (word == null)
-					textViewWordInfo.setText("抱歉！未查询到该单词……");
-				else
-					textViewWordInfo.setText("单词：" + word.getWord() + "\n\n音标："
-							+ word.getPhonetic() + "\n\n释义：" + word.getTrans()
-							+ "\n\n标签：" + word.getTags() + "\n");
-				break;
-			case 1:
-				Toast.makeText(WordInfo.this, "删除成功！", Toast.LENGTH_SHORT)
-						.show();
-				textViewWordInfo.setText("输入单词以查询……");
-				break;
-			case 2:
-				Toast.makeText(WordInfo.this, "单词信息已更新！", Toast.LENGTH_SHORT)
-						.show();
-				break;
-			case 3:
-				Toast.makeText(WordInfo.this, "新单词已添加！", Toast.LENGTH_SHORT)
-						.show();
-				break;
-			default:
-				break;
-			}
-		}
-	};
- }
+
