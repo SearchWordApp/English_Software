@@ -69,8 +69,35 @@ public class OfflineList extends Activity {
         		OfflineList.this.finish();    		 
         	}
         });
+		
+		cont = this.getApplicationContext();
+        fileroot = cont.getFilesDir().getAbsolutePath()+"/offline/";
+        		
+		File filedir = new File(fileroot);
+		if(!filedir.exists())
+			filedir.mkdir();
+		if(filedir.isDirectory()){
+			File[] filelist = filedir.listFiles();
+			if(filelist.length==0)
+				Toast.makeText(this,"当前阅读列表为空！",Toast.LENGTH_SHORT ).show();
+			else{
+				offlineNames = new String[filelist.length];
+		    	for (int i=0;i<offlineNames.length;i++){
+		    		offlineNames[i] = filelist[i].getName();
+		    	} 
+				offlineList.setAdapter(new SimpleAdapter(this, getData(), R.layout.common_listitem,   
+                        new String[]{"img", "text"},   
+                        new int[]{R.id.list_img, R.id.list_row}));
+				offlineList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+					public void onItemClick(AdapterView<?> arg0, View arg1, int arg2,
+							long arg3) {
+						onListItemClick(arg2);
+					}
+				});
+			}      
+		}
     }
-    
+	
     private List<Map<String, Object>> getData() {  
         List<Map<String, Object>> list = new ArrayList<Map<String, Object>>();                
         for(int i = 0; i < offlineNames.length; i++) {  
@@ -82,7 +109,52 @@ public class OfflineList extends Activity {
         return list;  
     }  
 
-    
+        String filepath;
+	String newfilename;
+    public void onListItemClick(final int position) {
+    	
+    	filepath = fileroot + offlineNames[position];
+    	AlertDialog.Builder builder = new Builder(OfflineList.this); 
+		builder.setTitle("选择操作"); 
+		builder.setItems(new String[] {"开始阅读","删除短文","重命名短文"},
+			new DialogInterface.OnClickListener() {                    
+            public void onClick(DialogInterface dialog, int which) {
+            	switch(which){
+         	   	case 0:
+	         	   	Intent intent=new Intent();            	
+	        		intent.putExtra("filepath", filepath);	         	            		
+	        		intent.setClass(OfflineList.this,OfflineRead.class);
+	        		startActivity(intent);
+	        		OfflineList.this.finish();
+	        		break;
+         	   	case 1:
+	         	   	new AlertDialog.Builder(OfflineList.this) 
+	  	          	.setTitle("提示") 
+	  	          	.setMessage("确定删除该短文吗？") 
+	  	          	.setPositiveButton("确定", new DialogInterface.OnClickListener() { 
+	  	          		public void onClick(DialogInterface dialog, int whichButton) { 
+	  	          			setResult(RESULT_OK);//确定按钮事件 
+	  	          			File file = new File( filepath);
+	  	          			file.delete();
+	   						Toast.makeText(OfflineList.this,"短文删除成功！", Toast.LENGTH_SHORT).show();               						
+	   						onCreate(savedInstanceState);
+	  	          		}								
+	  	          	})           	
+	  	          	.setNegativeButton("取消", new DialogInterface.OnClickListener() { 
+	  	          		public void onClick(DialogInterface dialog, int whichButton) { 
+	  	        		 //取消按钮事件 
+	  	          		} 
+	  	          	}) 
+	  	          	.show();
+         	   		break;
+         	   	case 2:
+         	   	
+         	   		break;
+            	}
+            }
+		});
+		builder.show();  
+	}
     
 	public boolean onKeyDown(int keyCode, KeyEvent event) {
 		if(keyCode==KeyEvent.KEYCODE_BACK){
