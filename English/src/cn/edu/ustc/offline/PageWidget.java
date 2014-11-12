@@ -88,6 +88,51 @@ public class PageWidget extends View {
 		mTouch.y = 0.01f;
 	}
 
+	/**
+	 * Author : hmg25 Version: 1.0 Description : 计算拖拽点对应的拖拽脚
+	 */
+	public void calcCornerXY(float x, float y) {
+		if (x <= mWidth / 2)
+			mCornerX = 0;
+		else
+			mCornerX = mWidth;
+		if (y <= mHeight / 2)
+			mCornerY = 0;
+		else
+			mCornerY = mHeight;
+		if ((mCornerX == 0 && mCornerY == mHeight)
+				|| (mCornerX == mWidth && mCornerY == 0))
+			mIsRTandLB = true;
+		else
+			mIsRTandLB = false;
+	}
+
+	public boolean doTouchEvent(MotionEvent event) {
+		// TODO Auto-generated method stub
+		if (event.getAction() == MotionEvent.ACTION_MOVE) {
+			mTouch.x = event.getX();
+			mTouch.y = event.getY();
+			this.postInvalidate();
+		}
+		if (event.getAction() == MotionEvent.ACTION_DOWN) {
+			mTouch.x = event.getX();
+			mTouch.y = event.getY();
+			// calcCornerXY(mTouch.x, mTouch.y);
+			// this.postInvalidate();
+		}
+		if (event.getAction() == MotionEvent.ACTION_UP) {
+			if (canDragOver()) {
+				startAnimation(1200);
+			} else {
+				mTouch.x = mCornerX - 0.09f;
+				mTouch.y = mCornerY - 0.09f;
+			}
+
+			this.postInvalidate();
+		}
+		// return super.onTouchEvent(event);
+		return true;
+	}
 	
 
 }
