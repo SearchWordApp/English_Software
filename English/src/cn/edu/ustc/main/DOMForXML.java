@@ -30,13 +30,10 @@ public class DOMForXML {
 			word.setTextContent(wordAdd);
 			Element trans = document.createElement("trans");  
 			trans.setTextContent(transAdd);
-			//Element phonetic = document.createElement("phonetic");  
-			//phonetic.setTextContent(phonAdd);
 			Element tags = document.createElement("tags");
 			tags.setTextContent(tagsAdd);
 			item.appendChild(word);
 			item.appendChild(trans);
-			//item.appendChild(phonetic);
 			item.appendChild(tags);
 			root.appendChild(item);
 						
