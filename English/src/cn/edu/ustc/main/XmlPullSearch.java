@@ -22,8 +22,7 @@ public class XmlPullSearch{
 	
 	public Word getWord() {	
 		try {
-			XmlPullParserFactory pullParserFactory = XmlPullParserFactory
-					.newInstance();
+			XmlPullParserFactory pullParserFactory = XmlPullParserFactory.newInstance();
 			XmlPullParser xmlPullParser = pullParserFactory.newPullParser(); 
 			InputStream inputStream = new FileInputStream(new File(path)); 
 			xmlPullParser.setInput(inputStream, "UTF-8"); 
@@ -33,14 +32,12 @@ public class XmlPullSearch{
 			while (eventType != XmlPullParser.END_DOCUMENT) {
 				String nodeName=xmlPullParser.getName();
                 switch (eventType) {
-            
                 case XmlPullParser.START_DOCUMENT:
                     break;
                
                 case XmlPullParser.START_TAG:
                     
                     if("word".equals(nodeName)){
-                       
                     	String wt = xmlPullParser.nextText().trim();
                     	if(wordSearch.equals(wt)){
                     		word=new Word();
@@ -49,9 +46,7 @@ public class XmlPullSearch{
                     	}                      
                     }else if("trans".equals(nodeName)&& found ){
                     	word.setTrans(xmlPullParser.nextText());
-                    }/**else if("phonetic".equals(nodeName) && found){
-                        word.setPhonetic(xmlPullParser.nextText());
-                    }*/else if("tags".equals(nodeName) && found){
+                    }else if("tags".equals(nodeName) && found){
                         word.setTags(xmlPullParser.nextText());
                     }
                     break;
