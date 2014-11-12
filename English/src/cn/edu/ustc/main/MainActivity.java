@@ -99,10 +99,8 @@ public class MainActivity extends Activity {
 	        		 finish(); 
 	        		 System.exit(0);
 	        	 } 
-	         }) 
-	         .setNegativeButton("取消", new DialogInterface.OnClickListener() { 
+	         }).setNegativeButton("取消", new DialogInterface.OnClickListener() { 
 	        	 public void onClick(DialogInterface dialog, int whichButton) { 
-	        		 //取消按钮事件 
 	        	 } 
 	         }).show();
 		}
