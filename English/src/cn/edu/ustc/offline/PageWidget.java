@@ -133,6 +133,121 @@ public class PageWidget extends View {
 		// return super.onTouchEvent(event);
 		return true;
 	}
+	/**
+	 * Author : hmg25 Version: 1.0 Description : 求解直线P1P2和直线P3P4的交点坐标
+	 */
+	public PointF getCross(PointF P1, PointF P2, PointF P3, PointF P4) {
+		PointF CrossP = new PointF();
+		// 二元函数通式： y=ax+b
+		float a1 = (P2.y - P1.y) / (P2.x - P1.x);
+		float b1 = ((P1.x * P2.y) - (P2.x * P1.y)) / (P1.x - P2.x);
+
+		float a2 = (P4.y - P3.y) / (P4.x - P3.x);
+		float b2 = ((P3.x * P4.y) - (P4.x * P3.y)) / (P3.x - P4.x);
+		CrossP.x = (b2 - b1) / (a1 - a2);
+		CrossP.y = a1 * CrossP.x + b1;
+		return CrossP;
+	}
+
+	private void calcPoints() {
+		mMiddleX = (mTouch.x + mCornerX) / 2;
+		mMiddleY = (mTouch.y + mCornerY) / 2;
+		mBezierControl1.x = mMiddleX - (mCornerY - mMiddleY)
+				* (mCornerY - mMiddleY) / (mCornerX - mMiddleX);
+		mBezierControl1.y = mCornerY;
+		mBezierControl2.x = mCornerX;
+		mBezierControl2.y = mMiddleY - (mCornerX - mMiddleX)
+				* (mCornerX - mMiddleX) / (mCornerY - mMiddleY);
+
+		// Log.i("hmg", "mTouchX  " + mTouch.x + "  mTouchY  " + mTouch.y);
+		// Log.i("hmg", "mBezierControl1.x  " + mBezierControl1.x
+		// + "  mBezierControl1.y  " + mBezierControl1.y);
+		// Log.i("hmg", "mBezierControl2.x  " + mBezierControl2.x
+		// + "  mBezierControl2.y  " + mBezierControl2.y);
+
+		mBezierStart1.x = mBezierControl1.x - (mCornerX - mBezierControl1.x)
+				/ 2;
+		mBezierStart1.y = mCornerY;
+
+		// 当mBezierStart1.x < 0或者mBezierStart1.x > 480时
+		// 如果继续翻页，会出现BUG故在此限制
+		if (mTouch.x > 0 && mTouch.x < mWidth) {
+			if (mBezierStart1.x < 0 || mBezierStart1.x > mWidth) {
+				if (mBezierStart1.x < 0)
+					mBezierStart1.x = mWidth - mBezierStart1.x;
+
+				float f1 = Math.abs(mCornerX - mTouch.x);
+				float f2 = mWidth * f1 / mBezierStart1.x;
+				mTouch.x = Math.abs(mCornerX - f2);
+
+				float f3 = Math.abs(mCornerX - mTouch.x)
+						* Math.abs(mCornerY - mTouch.y) / f1;
+				mTouch.y = Math.abs(mCornerY - f3);
+
+				mMiddleX = (mTouch.x + mCornerX) / 2;
+				mMiddleY = (mTouch.y + mCornerY) / 2;
+
+				mBezierControl1.x = mMiddleX - (mCornerY - mMiddleY)
+						* (mCornerY - mMiddleY) / (mCornerX - mMiddleX);
+				mBezierControl1.y = mCornerY;
+
+				mBezierControl2.x = mCornerX;
+				mBezierControl2.y = mMiddleY - (mCornerX - mMiddleX)
+						* (mCornerX - mMiddleX) / (mCornerY - mMiddleY);
+				// Log.i("hmg", "mTouchX --> " + mTouch.x + "  mTouchY-->  "
+				// + mTouch.y);
+				// Log.i("hmg", "mBezierControl1.x--  " + mBezierControl1.x
+				// + "  mBezierControl1.y -- " + mBezierControl1.y);
+				// Log.i("hmg", "mBezierControl2.x -- " + mBezierControl2.x
+				// + "  mBezierControl2.y -- " + mBezierControl2.y);
+				mBezierStart1.x = mBezierControl1.x
+						- (mCornerX - mBezierControl1.x) / 2;
+			}
+		}
+		mBezierStart2.x = mCornerX;
+		mBezierStart2.y = mBezierControl2.y - (mCornerY - mBezierControl2.y)
+				/ 2;
+
+		mTouchToCornerDis = (float) Math.hypot((mTouch.x - mCornerX),
+				(mTouch.y - mCornerY));
+
+		mBezierEnd1 = getCross(mTouch, mBezierControl1, mBezierStart1,
+				mBezierStart2);
+		mBezierEnd2 = getCross(mTouch, mBezierControl2, mBezierStart1,
+				mBezierStart2);
+
+		// Log.i("hmg", "mBezierEnd1.x  " + mBezierEnd1.x + "  mBezierEnd1.y  "
+		// + mBezierEnd1.y);
+		// Log.i("hmg", "mBezierEnd2.x  " + mBezierEnd2.x + "  mBezierEnd2.y  "
+		// + mBezierEnd2.y);
+
+		/*
+		 * mBeziervertex1.x 推导
+		 * ((mBezierStart1.x+mBezierEnd1.x)/2+mBezierControl1.x)/2 化简等价于
+		 * (mBezierStart1.x+ 2*mBezierControl1.x+mBezierEnd1.x) / 4
+		 */
+		mBeziervertex1.x = (mBezierStart1.x + 2 * mBezierControl1.x + mBezierEnd1.x) / 4;
+		mBeziervertex1.y = (2 * mBezierControl1.y + mBezierStart1.y + mBezierEnd1.y) / 4;
+		mBeziervertex2.x = (mBezierStart2.x + 2 * mBezierControl2.x + mBezierEnd2.x) / 4;
+		mBeziervertex2.y = (2 * mBezierControl2.y + mBezierStart2.y + mBezierEnd2.y) / 4;
+	}
 	
+	private void drawCurrentPageArea(Canvas canvas, Bitmap bitmap, Path path) {
+		mPath0.reset();
+		mPath0.moveTo(mBezierStart1.x, mBezierStart1.y);
+		mPath0.quadTo(mBezierControl1.x, mBezierControl1.y, mBezierEnd1.x,
+				mBezierEnd1.y);
+		mPath0.lineTo(mTouch.x, mTouch.y);
+		mPath0.lineTo(mBezierEnd2.x, mBezierEnd2.y);
+		mPath0.quadTo(mBezierControl2.x, mBezierControl2.y, mBezierStart2.x,
+				mBezierStart2.y);
+		mPath0.lineTo(mCornerX, mCornerY);
+		mPath0.close();
+
+		canvas.save();
+		canvas.clipPath(path, Region.Op.XOR);
+		canvas.drawBitmap(bitmap, 0, 0, null);
+		canvas.restore();
+	}
 
 }
