@@ -51,7 +51,7 @@ public class WordCourceSelect extends Activity {
 				handler.sendMessage(msg);
 			}
 		}.start();
-		
+
 		Button button_minus = (Button) this.findViewById(R.id.cource_group)
 				.findViewById(R.id.button_cource_minus);
 		Button button_add = (Button) findViewById(R.id.button_cource_add);
@@ -76,7 +76,7 @@ public class WordCourceSelect extends Activity {
 				}
 			}
 		});
-		
+
 		Button button_startButton = (Button) findViewById(R.id.button_word_learn_start);
 		button_startButton.setOnClickListener(new OnClickListener() {
 			public void onClick(View v) {
@@ -103,5 +103,38 @@ public class WordCourceSelect extends Activity {
 		});
 	}
 
-		
+	public boolean onKeyDown(int keyCode, KeyEvent event) {
+		if (keyCode == KeyEvent.KEYCODE_BACK) {
+			Intent intent = new Intent();
+			intent.setClass(WordCourceSelect.this, WordLearnMain.class);
+			startActivity(intent);
+			this.finish();
+		}
+		return super.onKeyDown(keyCode, event);
+	}
+
+	Handler handler = new Handler() {
+		public void handleMessage(Message msg) {
+			progressDialog.dismiss();
+			switch (msg.what) {
+			case 0:
+				if (wordCount == 0) {
+					Toast.makeText(WordCourceSelect.this, "当前词库没有单词！",
+							Toast.LENGTH_SHORT).show();
+					wordCountDesc = "本词库共有单词" + String.valueOf(wordCount) + "个";
+					textView.setText(wordCountDesc);
+					editText.setText("0");
+				} else {
+					courceCount = wordCount / courceSize + 1;
+					wordCountDesc = "本词库共有单词" + String.valueOf(wordCount)
+							+ "个，共分" + String.valueOf(courceCount) + "单元";
+					editText.setText(String.valueOf(cource));
+					textView.setText(wordCountDesc);
+				}
+				break;
+			default:
+				break;
+			}
+		}
+	};
 }
